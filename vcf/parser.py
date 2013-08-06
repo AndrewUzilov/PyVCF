@@ -541,6 +541,14 @@ class Reader(object):
                 qual = None
 
         filt = row[6]
+        
+        # Record whether FILTER field was explicitly set in input VCF.
+        if filt == '.':
+            # VCF convention for "filters not applied" (i.e. field was not explicitly set).
+            filterSet = False
+        else:
+            filterSet = True
+            
         if filt == 'PASS' or filt == '.':
             filt = []
         else:
@@ -554,6 +562,8 @@ class Reader(object):
 
         record = _Record(chrom, pos, ID, ref, alt, qual, filt,
                 info, fmt, self._sample_indexes)
+        
+        record.filterSet = filterSet
 
         if fmt is not None:
             samples = self._parse_samples(row[9:], fmt, record)
