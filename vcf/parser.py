@@ -614,6 +614,7 @@ class Writer(object):
         self.stream = stream
 
         two = '##{key}=<ID={0},Description="{1}">\n'
+        three = '##{key}=<ID={0},length={1}>\n'  # TODO: add "assembly" and "URL" tags?
         four = '##{key}=<ID={0},Number={num},Type={2},Description="{3}">\n'
         _num = self._fix_field_count
         for (key, vals) in template.metadata.iteritems():
@@ -634,6 +635,8 @@ class Writer(object):
             stream.write(two.format(key="FILTER", *line))
         for line in template.alts.itervalues():
             stream.write(two.format(key="ALT", *line))
+        for line in template.contigs.itervalues():
+            stream.write(three.format(key='contig', *line))
 
         self._write_header()
 
